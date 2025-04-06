@@ -12,9 +12,19 @@ aus dem Buch https://www.amazon.de/Hexagonal-Architecture-Explained-Alistair-Coc
 
 == Übungsaufgabe
 
-. Clone diese GIT repo
-. baue das Projekt einmal durch mittels maven z.B. mittels `mvnw verify`
-. TODO
+1. Clone dieses Git Repository `git clone https://github.com/alwessel/hexagon-workshop.git`
+2. Baue das Projekt einmal durch mittels Maven z.B. mittels `mvnw test`.
+** Schaue dir die Klassen an und versuche zu verstehen, wie der Test `CheckCarTest` funktioniert.
+3. Wechsel in den Branch `hexagon` mittels `git checkout hexagon` und baue erneut mittels `mvnw test`.
+** Hinweis: Die Arch-Unit Tests melden Fehler, dass die Klasse Application den PaymentService nutzt, der außerhalb des `app` Packages liegt.
+4. Refactore den `PaymentService` so, dass dieser als weiterer (secondary) Adapter genutzt wird, indem du einen weiteren Port `ForPaying` anlegst.
+5. Implementiere den `ForPaying` Adapter so, dass dieser den `PaymentService` nutzt.
+6. Implementiere ein  FakePaymentService Test-Adapter und nutze diesen, um den `BuyTicketTest` zu stabilisieren (siehe `FakeDatabaseService`).
+** Hinweis: Die Arch-Unit Tests sollten nun erfolgreich laufen.
+7. Füge eine weitere Adapter-Implementierung für den `ForStoringData` Port hinzu, der Tickets als JSON speichert.
+** Binde den neuen Adapter in die Tests ein, indem du eine ähnliche Klasse wie `CheckCarDbTest` hinzufügst.
+** Hinweis: um Zeit zu sparen, ist eine In-Memory List<String> mit JSON gut genug.
+** Konntest du die Technik erweitern, ohne die Fachlichkeit berühren zu müssen?
 
 == Feedback
 
