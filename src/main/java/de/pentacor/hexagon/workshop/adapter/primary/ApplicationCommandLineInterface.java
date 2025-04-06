@@ -1,21 +1,20 @@
-package de.pentacor.hexagon.workshop.cli;
+package de.pentacor.hexagon.workshop.adapter.primary;
 
-import de.pentacor.hexagon.workshop.app.Application;
-import de.pentacor.hexagon.workshop.app.usecases.buyticket.BuyTicketRequest;
-import de.pentacor.hexagon.workshop.app.usecases.checkcar.CheckCarRequest;
+import de.pentacor.hexagon.workshop.app.ports.primary.fines.CheckCarRequest;
+import de.pentacor.hexagon.workshop.app.ports.primary.fines.ForIssueFines;
+import de.pentacor.hexagon.workshop.app.ports.primary.parking.BuyTicketRequest;
+import de.pentacor.hexagon.workshop.app.ports.primary.parking.ForParingCars;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Scanner;
 
+@RequiredArgsConstructor
 public class ApplicationCommandLineInterface {
 
-    private final Application application = new Application();
+    private final ForIssueFines forIssueFines;
+    private final ForParingCars forParingCars;
 
-    public static void main(String[] args) {
-        System.out.println("Hello, Hexagon Workshop!");
-        new ApplicationCommandLineInterface().startCommandLoop();
-    }
-
-    private void startCommandLoop() {
+    public void startCommandLoop() {
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
 
@@ -56,7 +55,7 @@ public class ApplicationCommandLineInterface {
             String cardNo = scanner.nextLine();
 
             var request = new BuyTicketRequest(carPlate, euroAmount, cardNo);
-            var ticket = application.buyTicket(request);
+            var ticket = forParingCars.buyTicket(request);
             System.out.println("\nYou got yourself a ticket: " + ticket);
         } catch (Exception e) {
             System.out.println("\nError: " + e.getMessage());
@@ -71,7 +70,7 @@ public class ApplicationCommandLineInterface {
             String carPlate = scanner.nextLine();
 
             var request = new CheckCarRequest(carPlate);
-            var checkCarResult = application.checkCar(request);
+            var checkCarResult = forIssueFines.checkCar(request);
             System.out.println("\nCar check result: " + checkCarResult);
         } catch (Exception e) {
             System.out.println("\nError: " + e.getMessage());

@@ -5,8 +5,7 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
-import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
-
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
 @AnalyzeClasses(packages = "de.pentacor.hexagon.workshop",
         importOptions = ImportOption.DoNotIncludeTests.class // ignore test deps
@@ -14,16 +13,22 @@ import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 public class ArchitectureTest {
 
     @ArchTest
-    static final ArchRule layer_dependencies_are_respected = layeredArchitecture().consideringAllDependencies()
+    static final ArchRule app_should_only_depend_on_internals =
+            classes().that().resideInAPackage("..app..")
+                    .should().onlyDependOnClassesThat().resideInAnyPackage("..app..", "java..", "lombok..");
 
-            .layer("ui").definedBy("..cli..")
-            .layer("business").definedBy("..app..")
-            .layer("db").definedBy("..db..")
-            .layer("payment").definedBy("..payment..")
+    @ArchTest
+    static final ArchRule model_should_only_depend_on_internals =
+            classes().that().resideInAPackage("..model..")
+                    .should().onlyDependOnClassesThat().resideInAnyPackage("..model..", "java..", "lombok..");
 
-            .whereLayer("ui").mayNotBeAccessedByAnyLayer()
-            .whereLayer("business").mayOnlyBeAccessedByLayers("ui")
-            .whereLayer("db").mayOnlyBeAccessedByLayers("business")
-            .whereLayer("payment").mayOnlyBeAccessedByLayers("business");
+    @ArchTest
+    static final ArchRule usecases_should_only_depend_on_internals =
+            classes().that().resideInAPackage("..usecases..")
+                    .should().onlyDependOnClassesThat().resideInAnyPackage("..ports..", "..model..", "java..", "lombok..");
+    @ArchTest
+    static final ArchRule ports_should_only_depend_on_internals =
+            classes().that().resideInAPackage("..ports..")
+                    .should().onlyDependOnClassesThat().resideInAnyPackage("..ports..", "..model..", "java..", "lombok..");
 
 }

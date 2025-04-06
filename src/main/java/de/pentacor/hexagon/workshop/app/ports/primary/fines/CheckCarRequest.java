@@ -1,4 +1,4 @@
-package de.pentacor.hexagon.workshop.app.usecases.checkcar;
+package de.pentacor.hexagon.workshop.app.ports.primary.fines;
 
 import lombok.Data;
 

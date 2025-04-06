@@ -1,4 +1,4 @@
-package de.pentacor.hexagon.workshop.app.usecases.buyticket;
+package de.pentacor.hexagon.workshop.app.ports.primary.parking;
 
 import java.util.List;
 

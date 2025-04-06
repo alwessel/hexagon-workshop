@@ -1,4 +1,4 @@
-package de.pentacor.hexagon.workshop.db;
+package de.pentacor.hexagon.workshop.adapter.secondary.database;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,8 +1,9 @@
 package de.pentacor.hexagon.workshop.app.usecases.buyticket;
 
 import de.pentacor.hexagon.workshop.app.model.Ticket;
-import de.pentacor.hexagon.workshop.db.DatabaseService;
-import de.pentacor.hexagon.workshop.db.DbTicket;
+import de.pentacor.hexagon.workshop.app.ports.primary.parking.BuyTicketRequest;
+import de.pentacor.hexagon.workshop.app.ports.primary.parking.BuyTicketRequestException;
+import de.pentacor.hexagon.workshop.app.ports.secondary.storing.ForStoringData;
 import de.pentacor.hexagon.workshop.payment.PayRequest;
 import de.pentacor.hexagon.workshop.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class BuyTicket implements Function<BuyTicketRequest, Ticket> {
     private static final BigDecimal MINUTES_PER_HOUR = new BigDecimal("60.00");
     private static final BigDecimal EURO_RATE_PER_HOUR = new BigDecimal("1.50");
 
-    private final DatabaseService dataRepository;
+    private final ForStoringData dataRepository;
     private final PaymentService paymentService;
     private final Clock clock;
 
@@ -51,20 +52,10 @@ public class BuyTicket implements Function<BuyTicketRequest, Ticket> {
                 .build();
 
         // Store the ticket
-        this.dataRepository.saveTicket(mapFromTicket(ticket));
+        this.dataRepository.saveTicket(ticket);
         return ticket;
     }
 
-    private DbTicket mapFromTicket(Ticket ticket) {
-        return DbTicket.builder()
-                .ticketCode(ticket.getTicketCode())
-                .carPlate(ticket.getCarPlate())
-                .startingDateTime(ticket.getStartingDateTime().toString())
-                .endingDateTime(ticket.getEndingDateTime().toString())
-                .price(ticket.getPrice().toString())
-                .paymentId(ticket.getPaymentId())
-                .build();
-    }
 
     /**
      * minutes = (euros * minutesPerHour) / eurosPerHour

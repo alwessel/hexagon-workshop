@@ -1,16 +1,20 @@
-package de.pentacor.hexagon.workshop.db;
+package de.pentacor.hexagon.workshop.adapter.secondary.database;
 
+import de.pentacor.hexagon.workshop.app.model.Ticket;
+import de.pentacor.hexagon.workshop.app.ports.secondary.storing.ForStoringData;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 @Slf4j
-public class DatabaseService {
+public class DatabaseService implements ForStoringData {
 
     private static final String SEPARATOR = ";";
     private static final int DB_DELAY_MS = 3_000;
@@ -18,28 +22,44 @@ public class DatabaseService {
 
     private int nextTicketCode = 0;
 
-    /**
-     * Store the given ticket in the repository.
-     * If another ticket with the same code exists in the repository already,
-     * it is overwriting by the given ticket.
-     */
-    public void saveTicket(DbTicket ticket) {
+    @Override
+    public void saveTicket(Ticket ticket) {
         Objects.requireNonNull(ticket);
-        writeTicketToFile(ticket);
+        writeTicketToFile(mapFromTicket(ticket));
     }
 
-    /**
-     * Return the stored tickets to park the given car.
-     */
-    public List<DbTicket> getTicketsByCar(String carPlate) {
+    private DbTicket mapFromTicket(Ticket ticket) {
+        return DbTicket.builder()
+                .ticketCode(ticket.getTicketCode())
+                .carPlate(ticket.getCarPlate())
+                .startingDateTime(ticket.getStartingDateTime().toString())
+                .endingDateTime(ticket.getEndingDateTime().toString())
+                .price(ticket.getPrice().toString())
+                .paymentId(ticket.getPaymentId())
+                .build();
+    }
+
+    @Override
+    public List<Ticket> getTicketsByCar(String carPlate) {
         return readTicketsFromCsv().stream()
                 .filter(t -> t.getCarPlate().equals(carPlate))
+                .map(this::mapToTicket)
                 .toList();
     }
 
-    /**
-     * Returns and increments, atomically, the next value of the ticket code sequence.
-     */
+    private Ticket mapToTicket(DbTicket db) {
+        return Ticket.builder()
+                .ticketCode(db.getTicketCode())
+                .carPlate(db.getCarPlate())
+                .startingDateTime(LocalDateTime.parse(db.getStartingDateTime()))
+                .endingDateTime(LocalDateTime.parse(db.getEndingDateTime()))
+                .price(new BigDecimal(db.getPrice()))
+                .paymentId(db.getPaymentId())
+                .build();
+    }
+
+
+    @Override
     public String nextTicketCode() {
         return String.valueOf(nextTicketCode++);
     }

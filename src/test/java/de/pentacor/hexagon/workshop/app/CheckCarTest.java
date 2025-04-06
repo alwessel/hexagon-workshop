@@ -1,12 +1,14 @@
 package de.pentacor.hexagon.workshop.app;
 
-import de.pentacor.hexagon.workshop.app.usecases.checkcar.CheckCarRequest;
-import de.pentacor.hexagon.workshop.db.DatabaseService;
-import de.pentacor.hexagon.workshop.db.DbTicket;
-import de.pentacor.hexagon.workshop.payment.PaymentService;
+import de.pentacor.hexagon.workshop.adapter.secondary.database.FakeDatabaseService;
+import de.pentacor.hexagon.workshop.adapter.secondary.payment.PaymentService;
+import de.pentacor.hexagon.workshop.app.model.Ticket;
+import de.pentacor.hexagon.workshop.app.ports.primary.fines.CheckCarRequest;
+import de.pentacor.hexagon.workshop.app.ports.secondary.storing.ForStoringData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -15,9 +17,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class CheckCarTest {
 
     private TestClock clock = TestClock.freeze("2024/12/15 11:00");
-    private DatabaseService databaseService = new DatabaseService();
 
     private Application application;
+
+    protected ForStoringData databaseService = new FakeDatabaseService();
 
     @BeforeEach
     void setup() {
@@ -62,22 +65,22 @@ class CheckCarTest {
     }
 
     private void saveExistingTicket(String carPlate) {
-        var dbTicket = dbTicket(carPlate);
-        databaseService.saveTicket(dbTicket);
+        var ticket = ticket(carPlate);
+        databaseService.saveTicket(ticket);
     }
 
     private CheckCarRequest checkCarRequest(String carPlate) {
         return new CheckCarRequest(carPlate);
     }
 
-    private DbTicket dbTicket(String carPlate) {
+    private Ticket ticket(String carPlate) {
         var now = LocalDateTime.now(clock);
-        return DbTicket.builder()
+        return Ticket.builder()
                 .ticketCode("ticketCode")
                 .carPlate(carPlate)
-                .startingDateTime(now.toString())
-                .endingDateTime(now.plusMinutes(60).toString())
-                .price("12.34")
+                .startingDateTime(now)
+                .endingDateTime(now.plusMinutes(60))
+                .price(new BigDecimal("12.34"))
                 .paymentId("paymentId")
                 .build();
     }
