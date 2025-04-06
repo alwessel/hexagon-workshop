@@ -1,0 +1,28 @@
+= Hexagonale Architektur in der Praxis
+
+Willkommen zum Demo-Projekt des `Hexagonale Architektur in der Praxis` Workshops.
+
+Die Slides des Theorie-Teils findet ihr hier.
+
+Beispiel Code::
+
+Das Beispiel ist eine vereinfachte Variante der
+https://github.com/HexArchBook/bluezone_pro/[BlueZone Demo-Application]
+aus dem Buch https://www.amazon.de/Hexagonal-Architecture-Explained-Alistair-Cockburn/dp/173751978X[Hexagonal Architecture Explained].
+
+== Übungsaufgabe
+
+. Clone diese GIT repo
+. baue das Projekt einmal durch mittels maven z.B. mittels `mvnw verify`
+. TODO
+
+== Feedback
+
+Jederzeit gerne, was hat euch gefehlt, was war gut, was war schlecht?
+
+* per E-Mail an: Alexander.wessel@pentacor.de
+* LinkedIn: www.linkedin.com/in/a-wessel
+* Feedback: https://www.menti.com/alb3h828f9rm
+
+
+
