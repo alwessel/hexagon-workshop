@@ -1,10 +1,9 @@
 package de.pentacor.hexagon.workshop.app;
 
 import de.pentacor.hexagon.workshop.adapter.secondary.database.FakeDatabaseService;
-import de.pentacor.hexagon.workshop.adapter.secondary.payment.FakePaymentService;
 import de.pentacor.hexagon.workshop.app.ports.primary.parking.BuyTicketRequest;
-import de.pentacor.hexagon.workshop.app.ports.secondary.paying.ForPaying;
 import de.pentacor.hexagon.workshop.app.ports.secondary.storing.ForStoringData;
+import de.pentacor.hexagon.workshop.payment.PaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,13 +13,12 @@ class BuyTicketTest {
 
     private TestClock clock = TestClock.freeze("2024/12/15 11:00");
     private ForStoringData databaseService = new FakeDatabaseService();
-    private ForPaying paymentService = new FakePaymentService();
 
     private Application application;
 
     @BeforeEach
     void setup() {
-        application = new Application(databaseService, paymentService, clock);
+        application = new Application(databaseService, new PaymentService(), clock);
     }
 
     @Test

@@ -1,10 +1,10 @@
 package de.pentacor.hexagon.workshop.app;
 
 import de.pentacor.hexagon.workshop.adapter.secondary.database.FakeDatabaseService;
-import de.pentacor.hexagon.workshop.adapter.secondary.payment.PaymentService;
 import de.pentacor.hexagon.workshop.app.model.Ticket;
 import de.pentacor.hexagon.workshop.app.ports.primary.fines.CheckCarRequest;
 import de.pentacor.hexagon.workshop.app.ports.secondary.storing.ForStoringData;
+import de.pentacor.hexagon.workshop.payment.PaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
